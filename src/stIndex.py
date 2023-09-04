@@ -1,7 +1,6 @@
 import streamlit as st
 from board import *
 
-
 if __name__ == "__main__":
     st.header("Ant Clustering Algorithm - IAR0002", divider=True)
     board_dimension = st.slider("Selecione a Dimensão do Espaço de Busca:")
@@ -13,4 +12,10 @@ if __name__ == "__main__":
     executeClustering = st.button("Go!", use_container_width=True)
     if executeClustering:
         st.text(clusteringBoard)
+        st.divider()
+        #clusteringBoard.clustering(10)
+        clusteringBoard.thClustering(5)
+        st.text(clusteringBoard)
+
+
 
