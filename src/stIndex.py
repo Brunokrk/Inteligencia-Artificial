@@ -1,8 +1,6 @@
 import streamlit as st
 from board import *
-import numpy as np
 import pygame
-import sys
 
 if __name__ == "__main__":
     
