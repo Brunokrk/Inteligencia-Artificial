@@ -14,7 +14,7 @@ if __name__ == "__main__":
     ants = st.slider("Selecione Quantas Formigas irão Compor a Colônia:", min_value=2, max_value=7)
     
     
-    executeClustering = st.button("Go!", use_container_width=True)]
+    executeClustering = st.button("Go!", use_container_width=True)
     if executeClustering:
     
         #Pygame screen configs
