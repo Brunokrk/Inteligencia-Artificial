@@ -3,6 +3,7 @@ from ant import Ant
 import pygame
 import numpy as np
 import sys
+import math
 
 class Board():
     def __init__(self, dimension, ants, corpses, screen, width, height):
@@ -123,9 +124,13 @@ class Board():
         
 
         if paramRet == "p":
-            return 1 - (qtdItens / ((2 * ant.vision + 1) ** 2 - 1))
+            return self.sigmoid(1 - (qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
         else:
-            return (qtdItens / ((2 * ant.vision + 1) ** 2 - 1))
+            return self.sigmoid((qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
+
+
+    def sigmoid(self, x):
+        return 1/(1+math.exp(-x))
 
     def __str__(self):
         return '\n'.join([' '.join(map(str, row)) for row in self.board])
