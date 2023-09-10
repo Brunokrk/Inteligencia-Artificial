@@ -99,12 +99,10 @@ class Board():
                 #movement_count += 1  
                 #if movement_count >= totalMovements:
                 #    ants_done = True  
-
-        
+  
         pygame.quit()
         sys.exit()
 
-    
     def calculaChancePegar(self, ant, paramRet):
         qtdItens = 0
         
@@ -124,13 +122,13 @@ class Board():
         
 
         if paramRet == "p":
-            return self.sigmoid(1 - (qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
+            
+            return (1 - (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)))
+            #return self.sigmoid(1 - (qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
         else:
-            return self.sigmoid((qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
+            return (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1))
+            #return self.sigmoid(((qtdItens / ((2 * ant.vision + 1) ** 2 - 1))))
 
-
-    def sigmoid(self, x):
-        return 1/(1+math.exp(-x))
 
     def __str__(self):
         return '\n'.join([' '.join(map(str, row)) for row in self.board])

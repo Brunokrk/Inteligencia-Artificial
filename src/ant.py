@@ -6,22 +6,28 @@ class Ant():
         self.row = row
         self.column = column
         self.payload = " "
+        self.last_position = None
     
     def move(self, boardDimension):
-        '''Responsável pela movimentação da formiguinha'''
-        possibilites = [(0,1), (0,-1), (1,0), (-1,0)]
-        direction = random.choice(possibilites)
+        possibilities = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        
+        # Remove a posição atual do conjunto de posições visitadas
+        if self.last_position:
+            possibilities.remove((self.last_position[0] - self.row, self.last_position[1] - self.column))
 
-        next_row = self.row + direction[0]
-        next_col = self.column + direction[1]
+        # Remove as posições inválidas das possibilidades
+        valid_possibilities = [(dr, dc) for dr, dc in possibilities
+                              if 0 <= self.row + dr < boardDimension and 0 <= self.column + dc < boardDimension]
 
-        if 0 <= next_row < boardDimension and 0 <= next_col < boardDimension:
+        if valid_possibilities:
+            direction = random.choice(valid_possibilities)
+            next_row = self.row + direction[0]
+            next_col = self.column + direction[1]
+
+            # Atualiza a posição anterior
+            self.last_position = (self.row, self.column)
+
             self.row = next_row
             self.column = next_col
-        else:
-            # Se a formiga atingir uma borda, mova-a para o lado oposto do tabuleiro.
-            self.row = (self.row + direction[0]) % boardDimension
-            self.column = (self.column + direction[1]) % boardDimension
-    
     def pintaPos(self, screen, cor, pos):
         pygame.draw.rect(screen, cor, pos)

@@ -8,8 +8,8 @@ if __name__ == "__main__":
     
     st.header("Ant Clustering Algorithm - IAR0002", divider=True)
     board_dimension = st.slider("Selecione a Dimensão do Espaço de Busca:", min_value=5)
-    corpses = st.slider("Selecione a Quantidade de Corpos que serão espalhados:", max_value=100)
-    ants = st.slider("Selecione Quantas Formigas irão Compor a Colônia:", min_value=2, max_value=7)
+    corpses = st.slider("Selecione a Quantidade de Corpos que serão espalhados:", max_value=1000)
+    ants = st.slider("Selecione Quantas Formigas irão Compor a Colônia:", min_value=2, max_value=50)
     
     
     executeClustering = st.button("Go!", use_container_width=True)
