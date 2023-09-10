@@ -123,10 +123,10 @@ class Board():
 
         if paramRet == "p":
             
-            return (1 - (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)))
+            return (1 - (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)**2))
             #return self.sigmoid(1 - (qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
         else:
-            return (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1))
+            return (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)**2)
             #return self.sigmoid(((qtdItens / ((2 * ant.vision + 1) ** 2 - 1))))
 
 
