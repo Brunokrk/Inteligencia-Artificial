@@ -1,16 +1,17 @@
 import random
-from ant import Ant
+from scrappyAnt import ScrappyAnt
+from dataType import *
 import pygame
 import numpy as np
 import sys
 import math
 
-class Board():
-    def __init__(self, dimension, ants, corpses, screen, width, height):
+class ScrappyBoard():
+    def __init__(self, dimension, ants, dataframe screen, width, height):
         self.dimension = dimension
         self.ants = self.instantiateAnts(ants)
-        self.corpses = corpses
-        self.cellSize = 10
+        self.corpses = None #dataset
+        self.cellSize = 10 #pygame
         self.screen = screen #pygame
         self.window_width = width
         self.window_heigth = height
@@ -32,10 +33,10 @@ class Board():
         return board
     
     def instantiateAnts(self, ants):
-        antsPop = [Ant(random.randint(0, (self.dimension-1)), random.randint(0, (self.dimension-1))) for _ in range(ants)]
+        antsPop = [ScrappyAnt(random.randint(0, (self.dimension-1)), random.randint(0, (self.dimension-1))) for _ in range(ants)]
         return antsPop
 
-    def clustering(self, totalMovements):
+    def clustering(self):
         GRASS = (80, 200, 120)
         RED = (255, 0, 0)
         running = True
