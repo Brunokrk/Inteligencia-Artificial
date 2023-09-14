@@ -1,13 +1,13 @@
 import random
-from scrappyAnt import ScrappyAnt
-from dataType import *
+from dataAnts.scrappyAnt import ScrappyAnt
+from dataAnts.dataType import *
 import pygame
 import numpy as np
 import sys
 import math
 
 class ScrappyBoard():
-    def __init__(self, dimension, ants, dataframe screen, width, height):
+    def __init__(self, dimension, ants, screen, width, height):
         self.dimension = dimension
         self.ants = self.instantiateAnts(ants)
         self.corpses = None #dataset
@@ -17,24 +17,36 @@ class ScrappyBoard():
         self.window_heigth = height
         self.board = self.randomCorpses()
 
+    def lerDataset(self):
+        linhas = []
+        with open("dataAnts/data_A.csv", 'r') as file:
+            for linha in file:
+                linhas.append(linha.strip())
+        return linhas
+
     def randomCorpses(self):
         '''Espalha Corpos pelo Board de Forma Aleatória'''
-        if self.corpses > (self.dimension**2):
-            raise ValueError("Impossível alocar esta quantidade de corpos")
+        noneDataType = DataType(None, None, None)
+        board = [[noneDataType for _ in range(self.dimension)] for _ in range(self.dimension)]
 
-        board = [["_" for _ in range(self.dimension)] for _ in range(self.dimension)]
-        corpsePositions = [(i,j) for i in range(self.dimension) for j in range(self.dimension)]
-        random.shuffle(corpsePositions)
-
-        for i in range(self.corpses):
-            row,col = corpsePositions[i]
-            board[row][col] = "1" # type: ignore
+        linhas = self.lerDataset()
+        for linha in linhas:
+            #print(linha)
+            partes = linha.split(',')
+            x, y, rot = float(partes[0].replace(".", "")), float(partes[1].replace(".", "")), int(partes[2].replace(".",""))
+            data_type = DataType(x, y, rot)
+            x_random, y_random = random.randint(0, self.dimension - 1), random.randint(0, self.dimension - 1)
+            board[x_random][y_random] = data_type
 
         return board
     
     def instantiateAnts(self, ants):
         antsPop = [ScrappyAnt(random.randint(0, (self.dimension-1)), random.randint(0, (self.dimension-1))) for _ in range(ants)]
         return antsPop
+
+    def __str__(self):
+        return '\n'.join([' '.join(map(str, row)) for row in self.board])
+"""
 
     def clustering(self):
         GRASS = (80, 200, 120)
@@ -130,6 +142,4 @@ class ScrappyBoard():
             return (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)**2)
             #return self.sigmoid(((qtdItens / ((2 * ant.vision + 1) ** 2 - 1))))
 
-
-    def __str__(self):
-        return '\n'.join([' '.join(map(str, row)) for row in self.board])
+"""

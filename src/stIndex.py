@@ -39,8 +39,9 @@ if __name__ == "__main__":
             pygame.display.set_caption('Ant Clustering Algorithm')
 
             #Executa Clusterização Homogênea
-            clusteringBoard = ScrappyBoard(board_dimension, ants, dataframe, screen, window_width, window_height)
-            clusteringBoard.clustering()
+            clusteringBoard = ScrappyBoard(board_dimension, ants, screen, window_width, window_height)
+            #print(clusteringBoard)
+            #clusteringBoard.clustering()
             pass
             
 

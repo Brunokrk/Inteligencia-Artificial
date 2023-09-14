@@ -1,5 +1,5 @@
 import random
-from ant import Ant
+from corpseAnts.ant import Ant
 import pygame
 import numpy as np
 import sys

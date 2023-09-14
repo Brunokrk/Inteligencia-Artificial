@@ -1,6 +1,6 @@
 import random
 import pygame
-from dataType import *
+from dataAnts.dataType import *
 
 class ScrappyAnt():
     def __init__ (self, row, column):
