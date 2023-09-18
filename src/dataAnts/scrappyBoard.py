@@ -6,6 +6,8 @@ import numpy as np
 import sys
 import math
 
+noneDataType = DataType(None, None, None)
+
 class ScrappyBoard():
     def __init__(self, dimension, ants, screen, width, height):
         self.dimension = dimension
@@ -26,8 +28,8 @@ class ScrappyBoard():
 
     def randomCorpses(self):
         '''Espalha Corpos pelo Board de Forma Aleatória'''
-        noneDataType = DataType(None, None, None)
-        board = [[noneDataType for _ in range(self.dimension)] for _ in range(self.dimension)]
+        #noneDataType = DataType(None, None, None)
+        board = [[None for _ in range(self.dimension)] for _ in range(self.dimension)]
 
         linhas = self.lerDataset()
         for linha in linhas:
@@ -46,13 +48,12 @@ class ScrappyBoard():
 
     def __str__(self):
         return '\n'.join([' '.join(map(str, row)) for row in self.board])
-"""
 
     def clustering(self):
-        GRASS = (80, 200, 120)
-        RED = (255, 0, 0)
+        GRASS = (80, 200, 120) #floor
+        RED = (255, 0, 0) #ants
         running = True
-        movement_count = 0
+        #movement_count = 0
         ants_done = False
 
         body_positions = [[False for _ in range(self.dimension)] for _ in range(self.dimension)]
@@ -74,9 +75,14 @@ class ScrappyBoard():
                 #corpos 
                 for row in range(self.dimension):
                     for col in range(self.dimension):
-                        if self.board[row][col] == "1":
+                        if self.board[row][col] != noneDataType:
+                            print("entrou aqui")
                             body_positions[row][col] = True
-                            pygame.draw.rect(temp_surface, (82, 48, 41), (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
+                            pygame.draw.rect(temp_surface, self.board[row][col].color, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
+                
+                
+                """
+                
 
                 for ant in self.ants:
                     ant.move(self.dimension)
@@ -103,6 +109,7 @@ class ScrappyBoard():
                             body_positions[row][col] = True
                     # formigas
                     pygame.draw.rect(temp_surface, RED, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
+                """
 
                 #atualizaçaõ
                 self.screen.fill(GRASS) 
@@ -133,13 +140,8 @@ class ScrappyBoard():
                 if self.board[row][col] == "1":
                     qtdItens+= 1   
         
-
         if paramRet == "p":
-            
             return (1 - (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)**2))
-            #return self.sigmoid(1 - (qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
         else:
             return (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)**2)
-            #return self.sigmoid(((qtdItens / ((2 * ant.vision + 1) ** 2 - 1))))
-
-"""
+           
