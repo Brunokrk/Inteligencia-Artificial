@@ -1,9 +1,9 @@
 class DataType():
-    def __init__(self, x, y,rot):
+    def __init__(self, x, y,rot, isData):
         self.x = x
         self.y = y 
         self.rot = rot
-        self.isData = self.setData() 
+        self.isData = isData
         self.color = self.setRot()  
 
     def setRot(self):
@@ -16,9 +16,6 @@ class DataType():
         elif self.rot == 4:
             return (255, 128, 0) #Laranja
         return None
-
-    def setData(self):
-        pass
 
     def __str__(self):
         return str(self.rot)

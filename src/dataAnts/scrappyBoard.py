@@ -6,8 +6,6 @@ import numpy as np
 import sys
 import math
 
-noneDataType = DataType(None, None, None)
-
 class ScrappyBoard():
     def __init__(self, dimension, ants, screen, width, height):
         self.dimension = dimension
@@ -28,15 +26,15 @@ class ScrappyBoard():
 
     def randomCorpses(self):
         '''Espalha Corpos pelo Board de Forma Aleatória'''
-        #noneDataType = DataType(None, None, None)
-        board = [[None for _ in range(self.dimension)] for _ in range(self.dimension)]
+        noneDataType = DataType(None, None, None, False)
+        board = [[noneDataType for _ in range(self.dimension)] for _ in range(self.dimension)]
 
         linhas = self.lerDataset()
         for linha in linhas:
             #print(linha)
             partes = linha.split(',')
             x, y, rot = float(partes[0].replace(".", "")), float(partes[1].replace(".", "")), int(partes[2].replace(".",""))
-            data_type = DataType(x, y, rot)
+            data_type = DataType(x, y, rot, True)
             x_random, y_random = random.randint(0, self.dimension - 1), random.randint(0, self.dimension - 1)
             board[x_random][y_random] = data_type
 
@@ -75,15 +73,12 @@ class ScrappyBoard():
                 #corpos 
                 for row in range(self.dimension):
                     for col in range(self.dimension):
-                        if self.board[row][col] != noneDataType:
+                        if self.board[row][col].isData == True:
                             print("entrou aqui")
                             body_positions[row][col] = True
                             pygame.draw.rect(temp_surface, self.board[row][col].color, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
                 
-                
                 """
-                
-
                 for ant in self.ants:
                     ant.move(self.dimension)
                     row = ant.row
