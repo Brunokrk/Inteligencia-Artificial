@@ -16,6 +16,9 @@ class ScrappyBoard():
         self.window_width = width
         self.window_heigth = height
         self.board = self.randomCorpses()
+        self.k1 = 0.1
+        self.k2 = 0.3
+        self.alpha = 0.3
 
     def lerDataset(self):
         linhas = []
@@ -48,15 +51,16 @@ class ScrappyBoard():
         return '\n'.join([' '.join(map(str, row)) for row in self.board])
 
     def clustering(self):
-        GRASS = (80, 200, 120) #floor
+        GRASS = (255, 255, 255) #floor
         RED = (255, 0, 0) #ants
         running = True
         #movement_count = 0
         ants_done = False
-
+        noneDataType = DataType(None, None, None, False)
         body_positions = [[False for _ in range(self.dimension)] for _ in range(self.dimension)]
 
         while running:
+            #print("entrou aqui")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -74,37 +78,43 @@ class ScrappyBoard():
                 for row in range(self.dimension):
                     for col in range(self.dimension):
                         if self.board[row][col].isData == True:
-                            print("entrou aqui")
                             body_positions[row][col] = True
                             pygame.draw.rect(temp_surface, self.board[row][col].color, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
                 
-                """
+                
                 for ant in self.ants:
                     ant.move(self.dimension)
                     row = ant.row
                     col = ant.column
-                    if body_positions[row][col] == True and ant.payload != "1":
+                    if body_positions[row][col] == True and ant.payload == None:
                         # chance de pegar
+
+                        #calcular f(xi)
+                        #pegar com prob Pp(xi)
+
                         randPegar = np.random.rand()
-                        chancePegar = self.calculaChancePegar(ant, "p")
+                        chancePegar = self.calculatingPickAndDrop(ant, "p")
                         if(randPegar < chancePegar ):
                             print("Pegou")
-                            ant.payload = self.board[row][col]
-                            self.board[row][col] = "_"
+                            ant.setPayload(self.board[row][col])
+                            self.board[row][col] = noneDataType
                             body_positions[row][col] = False
-                    elif body_positions[row][col] == False and ant.payload == "1":
+                    elif body_positions[row][col] == False and ant.payload != None:
                         #chance de largar
+
+                        #calcule f(xi)
+                        #pegue com prob Pd(xi)
                         txLargar = np.random.rand()
-                        chanceLargar = self.calculaChancePegar(ant, "l")
+                        chanceLargar = self.calculatingPickAndDrop(ant, "l")
                         print(str(chanceLargar) +":"+str(txLargar))
                         if(txLargar < chanceLargar):
                             print("Largou")
                             self.board[row][col] = ant.payload
-                            ant.payload = "_"
+                            ant.payload = None
                             body_positions[row][col] = True
                     # formigas
                     pygame.draw.rect(temp_surface, RED, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
-                """
+                
 
                 #atualizaçaõ
                 self.screen.fill(GRASS) 
@@ -118,9 +128,10 @@ class ScrappyBoard():
         pygame.quit()
         sys.exit()
 
-    def calculaChancePegar(self, ant, paramRet):
-        qtdItens = 0
-        
+    def calculatingPickAndDrop(self, ant, paramRet):
+        qtdItens = 0 
+        distances =[]
+        #contando dados na vizinhança
         for i in range(-ant.vision, ant.vision+1):
             for j in range(-ant.vision, ant.vision+1):
                 if i == 0 and j == 0:
@@ -130,13 +141,40 @@ class ScrappyBoard():
 
                 row %= self.dimension
                 col %= self.dimension  
-                
-
-                if self.board[row][col] == "1":
+                if self.board[row][col].isData == True:
                     qtdItens+= 1   
-        
+                    distance = self.euclideanDistance(ant, self.board[row][col], action)
+                    distances.append(distance)
+
+
         if paramRet == "p":
-            return (1 - (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)**2))
+            #pegar
+            similarity = self.calculateSimilarity(distances)
+            pick_probability = self.calculatePickProbability(similarity)
+            return pick_probability
         else:
-            return (qtdItens**2 / ((2 * ant.vision + 1) ** 2 - 1)**2)
-           
+            #largar
+            similarity = self.calculateSimilarity(distances)
+            drop_probability = self.calculateDropProbability(similarity)
+            return drop_probability
+
+    def euclideanDistance(self, ant, item, action,):
+        """Calcula a distância entre a formiga e o item"""
+        if action == "p":
+            dx = self.board[ant.row][ant.col].x - item.x
+            dy = self.board[ant.row][ant.col].y - item.y
+            return np.sqrt(dx**2 + dy**2)
+        else:
+            dx = ant.payload.x - item.x
+            dy = ant.payload.y - item.y
+            return np.sqrt(dx**2 + dy**2)
+        
+
+    def calculateSimilarity(self, distances):
+        pass
+
+    def calculateDropProbability(self,similarity):
+        pass
+
+    def calculatePickProbability(self, similarity):
+        pass

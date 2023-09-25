@@ -73,7 +73,7 @@ class Board():
                         # chance de pegar
                         randPegar = np.random.rand()
                         chancePegar = self.calculaChancePegar(ant, "p")
-                        if(randPegar < chancePegar ):
+                        if(0.555 < chancePegar ):
                             print("Pegou")
                             ant.payload = self.board[row][col]
                             self.board[row][col] = "_"
@@ -83,7 +83,7 @@ class Board():
                         txLargar = np.random.rand()
                         chanceLargar = self.calculaChancePegar(ant, "l")
                         print(str(chanceLargar) +":"+str(txLargar))
-                        if(txLargar < chanceLargar):
+                        if(0.333 < chanceLargar):
                             print("Largou")
                             self.board[row][col] = ant.payload
                             ant.payload = "_"
@@ -121,12 +121,13 @@ class Board():
                     qtdItens+= 1   
         
 
+        spaces = (2 * ant.vision + 1) ** 2 - 1
         if paramRet == "p":
             
-            return (1 - (qtdItens/ ((2 * ant.vision + 1) ** 2 - 1)))**2
+            return (1 - (qtdItens/ spaces))
             #return self.sigmoid(1 - (qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
         else:
-            return (qtdItens / ((2 * ant.vision + 1) ** 2 - 1))**2
+            return (qtdItens / spaces)
             #return self.sigmoid(((qtdItens / ((2 * ant.vision + 1) ** 2 - 1))))
 
 

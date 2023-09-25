@@ -41,7 +41,7 @@ if __name__ == "__main__":
             #Executa Clusterização Homogênea
             clusteringBoard = ScrappyBoard(board_dimension, ants, screen, window_width, window_height)
             #print(clusteringBoard)
-            #clusteringBoard.clustering()
+            clusteringBoard.clustering()
             pass
             
 

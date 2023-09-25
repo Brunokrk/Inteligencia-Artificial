@@ -31,5 +31,9 @@ class ScrappyAnt():
 
             self.row = next_row
             self.column = next_col
+
     def pintaPos(self, screen, cor, pos):
         pygame.draw.rect(screen, cor, pos)
+
+    def setPayload(self, payloadFromBoard):
+        self.payload = payloadFromBoard
