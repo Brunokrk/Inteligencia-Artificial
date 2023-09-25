@@ -18,11 +18,11 @@ class ScrappyBoard():
         self.board = self.randomCorpses()
         self.k1 = 0.1
         self.k2 = 0.3
-        self.alpha = 0.3
+        self.alpha = 60.0
 
     def lerDataset(self):
         linhas = []
-        with open("dataAnts/data_A.csv", 'r') as file:
+        with open("dataAnts/data.csv", 'r') as file:
             for linha in file:
                 linhas.append(linha.strip())
         return linhas
@@ -57,6 +57,7 @@ class ScrappyBoard():
         #movement_count = 0
         ants_done = False
         noneDataType = DataType(None, None, None, False)
+        density = 0.0
         body_positions = [[False for _ in range(self.dimension)] for _ in range(self.dimension)]
 
         while running:
@@ -87,28 +88,23 @@ class ScrappyBoard():
                     row = ant.row
                     col = ant.column
                     if body_positions[row][col] == True and ant.payload == None:
-                        # chance de pegar
-
-                        #calcular f(xi)
-                        #pegar com prob Pp(xi)
-
-                        randPegar = np.random.rand()
-                        chancePegar = self.calculatingPickAndDrop(ant, "p")
-                        if(randPegar < chancePegar ):
-                            print("Pegou")
+                        #pegar
+                        randPegar = np.random.rand()#num aleatorio
+                        density = self.calculatingDensity(ant, "p") #retorna densidade
+                        print(density)
+                        coeff = (self.k1 / (self.k1 + density))**2
+                        if(randPegar < coeff ):
                             ant.setPayload(self.board[row][col])
                             self.board[row][col] = noneDataType
                             body_positions[row][col] = False
                     elif body_positions[row][col] == False and ant.payload != None:
-                        #chance de largar
-
-                        #calcule f(xi)
-                        #pegue com prob Pd(xi)
-                        txLargar = np.random.rand()
-                        chanceLargar = self.calculatingPickAndDrop(ant, "l")
-                        print(str(chanceLargar) +":"+str(txLargar))
-                        if(txLargar < chanceLargar):
-                            print("Largou")
+                        #largar
+                        randLargar = np.random.rand()
+                        density = self.calculatingDensity(ant, "l")
+                        coeff = (density / (self.k2 + density))**2
+                        #print(str(chanceLargar) +":"+str(txLargar))
+                        if(randLargar < coeff):
+                            #print("Largou")
                             self.board[row][col] = ant.payload
                             ant.payload = None
                             body_positions[row][col] = True
@@ -128,9 +124,11 @@ class ScrappyBoard():
         pygame.quit()
         sys.exit()
 
-    def calculatingPickAndDrop(self, ant, paramRet):
+    def calculatingDensity(self, ant, paramRet):
+        """Calcula a densidade na vizinhança"""
         qtdItens = 0 
         distances =[]
+        density = 0.0
         #contando dados na vizinhança
         for i in range(-ant.vision, ant.vision+1):
             for j in range(-ant.vision, ant.vision+1):
@@ -143,38 +141,34 @@ class ScrappyBoard():
                 col %= self.dimension  
                 if self.board[row][col].isData == True:
                     qtdItens+= 1   
-                    distance = self.euclideanDistance(ant, self.board[row][col], action)
+                    distance = self.euclideanDistance(ant, self.board[row][col], paramRet)
+                    dissim = 1.0 - (distance/self.alpha)
+                    #print(dissim)
+                    if(dissim >= 0.0):
+                        density += dissim
                     distances.append(distance)
-
-
-        if paramRet == "p":
-            #pegar
-            similarity = self.calculateSimilarity(distances)
-            pick_probability = self.calculatePickProbability(similarity)
-            return pick_probability
+        #print(distances)
+        if density <=0:
+            return 0.0
         else:
-            #largar
-            similarity = self.calculateSimilarity(distances)
-            drop_probability = self.calculateDropProbability(similarity)
-            return drop_probability
+            final_density = density / 9
+            return final_density
 
-    def euclideanDistance(self, ant, item, action,):
+    def euclideanDistance(self, ant, item, action):
         """Calcula a distância entre a formiga e o item"""
         if action == "p":
-            dx = self.board[ant.row][ant.col].x - item.x
-            dy = self.board[ant.row][ant.col].y - item.y
+            print("PEGAR")
+            dx = self.board[ant.row][ant.column].x - item.x
+            print("dx: " +str(self.board[ant.row][ant.column].x)+ " - "+str(item.x)+"=="+str(dx))
+            dy = self.board[ant.row][ant.column].y - item.y
+            print("dy: " +str(self.board[ant.row][ant.column].y)+ " - "+str(item.y)+"=="+str(dy))
+            #print(np.sqrt(dx**2 + dy**2))
             return np.sqrt(dx**2 + dy**2)
         else:
             dx = ant.payload.x - item.x
+            print("dx: " +str(ant.payload.x)+ " - "+str(item.x)+"=="+str(dx))
             dy = ant.payload.y - item.y
+            print("dx: " +str(ant.payload.y)+ " - "+str(item.y)+"=="+str(dy))
+            #print(np.sqrt(dx**2 + dy**2))
             return np.sqrt(dx**2 + dy**2)
         
-
-    def calculateSimilarity(self, distances):
-        pass
-
-    def calculateDropProbability(self,similarity):
-        pass
-
-    def calculatePickProbability(self, similarity):
-        pass
