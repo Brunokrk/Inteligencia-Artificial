@@ -18,7 +18,7 @@ class ScrappyBoard():
         self.board = self.randomCorpses()
         self.k1 = 0.1
         self.k2 = 0.3
-        self.alpha = 60.0
+        self.alpha = 20
 
     def lerDataset(self):
         linhas = []
@@ -36,7 +36,7 @@ class ScrappyBoard():
         for linha in linhas:
             #print(linha)
             partes = linha.split(',')
-            x, y, rot = float(partes[0].replace(".", "")), float(partes[1].replace(".", "")), int(partes[2].replace(".",""))
+            x, y, rot = float(partes[0]), float(partes[1]), int(partes[2])
             data_type = DataType(x, y, rot, True)
             x_random, y_random = random.randint(0, self.dimension - 1), random.randint(0, self.dimension - 1)
             board[x_random][y_random] = data_type
@@ -91,9 +91,10 @@ class ScrappyBoard():
                         #pegar
                         randPegar = np.random.rand()#num aleatorio
                         density = self.calculatingDensity(ant, "p") #retorna densidade
-                        print(density)
+                        #print(density)
                         coeff = (self.k1 / (self.k1 + density))**2
                         if(randPegar < coeff ):
+                            print("P"+str(randPegar) +":"+str(coeff))
                             ant.setPayload(self.board[row][col])
                             self.board[row][col] = noneDataType
                             body_positions[row][col] = False
@@ -102,8 +103,8 @@ class ScrappyBoard():
                         randLargar = np.random.rand()
                         density = self.calculatingDensity(ant, "l")
                         coeff = (density / (self.k2 + density))**2
-                        #print(str(chanceLargar) +":"+str(txLargar))
                         if(randLargar < coeff):
+                            print("L"+str(randLargar) +":"+str(coeff))
                             #print("Largou")
                             self.board[row][col] = ant.payload
                             ant.payload = None
@@ -157,18 +158,18 @@ class ScrappyBoard():
     def euclideanDistance(self, ant, item, action):
         """Calcula a distância entre a formiga e o item"""
         if action == "p":
-            print("PEGAR")
+            #print("PEGAR")
             dx = self.board[ant.row][ant.column].x - item.x
-            print("dx: " +str(self.board[ant.row][ant.column].x)+ " - "+str(item.x)+"=="+str(dx))
+            #print("dx: " +str(self.board[ant.row][ant.column].x)+ " - "+str(item.x)+"=="+str(dx))
             dy = self.board[ant.row][ant.column].y - item.y
-            print("dy: " +str(self.board[ant.row][ant.column].y)+ " - "+str(item.y)+"=="+str(dy))
+            #print("dy: " +str(self.board[ant.row][ant.column].y)+ " - "+str(item.y)+"=="+str(dy))
             #print(np.sqrt(dx**2 + dy**2))
             return np.sqrt(dx**2 + dy**2)
         else:
             dx = ant.payload.x - item.x
-            print("dx: " +str(ant.payload.x)+ " - "+str(item.x)+"=="+str(dx))
+            #print("dx: " +str(ant.payload.x)+ " - "+str(item.x)+"=="+str(dx))
             dy = ant.payload.y - item.y
-            print("dx: " +str(ant.payload.y)+ " - "+str(item.y)+"=="+str(dy))
+            #print("dx: " +str(ant.payload.y)+ " - "+str(item.y)+"=="+str(dy))
             #print(np.sqrt(dx**2 + dy**2))
             return np.sqrt(dx**2 + dy**2)
         
