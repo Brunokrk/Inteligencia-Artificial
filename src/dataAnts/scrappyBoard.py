@@ -58,6 +58,7 @@ class ScrappyBoard():
         ants_done = False
         noneDataType = DataType(None, None, None, False)
         density = 0.0
+        iter= 0.0
         body_positions = [[False for _ in range(self.dimension)] for _ in range(self.dimension)]
 
         while running:
@@ -94,7 +95,7 @@ class ScrappyBoard():
                         #print(density)
                         coeff = (self.k1 / (self.k1 + density))**2
                         if(randPegar < coeff ):
-                            print("P"+str(randPegar) +":"+str(coeff))
+                            #print("P"+str(randPegar) +":"+str(coeff))
                             ant.setPayload(self.board[row][col])
                             self.board[row][col] = noneDataType
                             body_positions[row][col] = False
@@ -104,7 +105,7 @@ class ScrappyBoard():
                         density = self.calculatingDensity(ant, "l")
                         coeff = (density / (self.k2 + density))**2
                         if(randLargar < coeff):
-                            print("L"+str(randLargar) +":"+str(coeff))
+                            #print("L"+str(randLargar) +":"+str(coeff))
                             #print("Largou")
                             self.board[row][col] = ant.payload
                             ant.payload = None
@@ -112,7 +113,8 @@ class ScrappyBoard():
                     # formigas
                     pygame.draw.rect(temp_surface, RED, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
                 
-
+                print("Iteração: "+str(iter))
+                iter+=1
                 #atualizaçaõ
                 self.screen.fill(GRASS) 
                 self.screen.blit(temp_surface, (0, 0))
