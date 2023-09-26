@@ -7,25 +7,53 @@ import sys
 import math
 
 class ScrappyBoard():
-    def __init__(self, dimension, ants, screen, width, height):
+    def __init__(self, dimension, ants, corpses, screen, width, height):
         self.dimension = dimension
         self.ants = self.instantiateAnts(ants)
-        self.corpses = None #dataset
+        self.corpses = corpses #dataset
         self.cellSize = 10 #pygame
         self.screen = screen #pygame
         self.window_width = width
         self.window_heigth = height
         self.board = self.randomCorpses()
-        self.k1 = 0.1
-        self.k2 = 0.3
-        self.alpha = 20
+        self.k1 = self.setk1()
+        self.k2 = self.setk2()
+        self.alpha = self.setAlpha()
+
+    def setk1(self):
+        if self.corpses == 400:
+            #4 Grupos
+            return 0.3
+        else:
+            #15 Grupos
+            return 0.4
+
+    def setk2(self):
+        if self.corpses == 400:
+            #4 Grupos
+            return 0.6
+        else:
+            #15 Grupos
+            return 0.3
+    
+    def setAlpha(self):
+        if self.corpses == 400:
+            return 25
+        else:
+            return 1.15
 
     def lerDataset(self):
         linhas = []
-        with open("dataAnts/data.csv", 'r') as file:
-            for linha in file:
-                linhas.append(linha.strip())
-        return linhas
+        if self.corpses == 400:
+            with open("dataAnts/data4.csv", 'r') as file:
+                for linha in file:
+                    linhas.append(linha.strip())
+            return linhas
+        else:#15 grupos
+            with open("dataAnts/data15.csv", 'r') as file:
+                for linha in file:
+                    linhas.append(linha.strip())
+            return linhas
 
     def randomCorpses(self):
         '''Espalha Corpos pelo Board de Forma Aleatória'''
@@ -52,13 +80,14 @@ class ScrappyBoard():
 
     def clustering(self):
         GRASS = (255, 255, 255) #floor
-        RED = (255, 0, 0) #ants
+        RED = (0, 0, 0) #ants
         running = True
         #movement_count = 0
         ants_done = False
         noneDataType = DataType(None, None, None, False)
         density = 0.0
         iter= 0.0
+        all_ants_empty = False
         body_positions = [[False for _ in range(self.dimension)] for _ in range(self.dimension)]
 
         while running:
@@ -105,8 +134,6 @@ class ScrappyBoard():
                         density = self.calculatingDensity(ant, "l")
                         coeff = (density / (self.k2 + density))**2
                         if(randLargar < coeff):
-                            #print("L"+str(randLargar) +":"+str(coeff))
-                            #print("Largou")
                             self.board[row][col] = ant.payload
                             ant.payload = None
                             body_positions[row][col] = True
@@ -120,10 +147,8 @@ class ScrappyBoard():
                 self.screen.blit(temp_surface, (0, 0))
                 pygame.time.delay(30)
                 pygame.display.flip()
-                #movement_count += 1  
-                #if movement_count >= totalMovements:
-                #    ants_done = True  
-  
+          
+     
         pygame.quit()
         sys.exit()
 
@@ -146,7 +171,7 @@ class ScrappyBoard():
                     qtdItens+= 1   
                     distance = self.euclideanDistance(ant, self.board[row][col], paramRet)
                     dissim = 1.0 - (distance/self.alpha)
-                    #print(dissim)
+                    #print(distance)
                     if(dissim >= 0.0):
                         density += dissim
                     distances.append(distance)

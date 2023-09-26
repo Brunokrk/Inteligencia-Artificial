@@ -9,10 +9,20 @@ if __name__ == "__main__":
     
     st.header("Ant Clustering Algorithm - IAR0002", divider=True)
     algorithm =st.selectbox("Qual Algoritmo quer rodar?", ("Clusterização Homogênea", "Clusterização Heterogênea (DataFrame)"))
-    board_dimension = st.slider("Selecione a Dimensão do Espaço de Busca:", min_value=5)
-    corpses = st.slider("Selecione a Quantidade de Corpos que serão espalhados:", max_value=1000)
-    ants = st.slider("Selecione Quantas Formigas irão Compor a Colônia:", min_value=2, max_value=50)
-    
+    dataset = "4 Grupos"
+    if algorithm == "Clusterização Homogênea":
+        board_dimension = st.slider("Selecione a Dimensão do Espaço de Busca:", min_value=5)
+        corpses = st.slider("Selecione a Quantidade de Corpos que serão espalhados:", max_value=1000)
+        ants = st.slider("Selecione Quantas Formigas irão Compor a Colônia:", min_value=2, max_value=50)
+    else:
+        board_dimension = st.slider("Selecione a Dimensão do Espaço de Busca:", min_value=5)
+        dataset = st.selectbox("Qual Dataset deseja usar?", ("4 Grupos", "15 Grupos"))
+        if dataset == "4 Grupos":
+            corpses = 400
+        else:
+            corpses = 600
+        ants = st.slider("Selecione Quantas Formigas irão Compor a Colônia:", min_value=2, max_value=50)
+
     executeClustering = st.button("Go!", use_container_width=True)
     if executeClustering:
         #Pygame screen configs
@@ -39,7 +49,7 @@ if __name__ == "__main__":
             pygame.display.set_caption('Ant Clustering Algorithm')
 
             #Executa Clusterização Homogênea
-            clusteringBoard = ScrappyBoard(board_dimension, ants, screen, window_width, window_height)
+            clusteringBoard = ScrappyBoard(board_dimension, ants, corpses, screen, window_width, window_height)
             #print(clusteringBoard)
             clusteringBoard.clustering()
             pass

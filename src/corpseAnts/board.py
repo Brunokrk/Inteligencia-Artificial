@@ -74,7 +74,7 @@ class Board():
                         randPegar = np.random.rand()
                         chancePegar = self.calculaChancePegar(ant, "p")
                         if(0.555 < chancePegar ):
-                            print("Pegou")
+                            #print("Pegou")
                             ant.payload = self.board[row][col]
                             self.board[row][col] = "_"
                             body_positions[row][col] = False
@@ -84,7 +84,7 @@ class Board():
                         chanceLargar = self.calculaChancePegar(ant, "l")
                         print(str(chanceLargar) +":"+str(txLargar))
                         if(0.333 < chanceLargar):
-                            print("Largou")
+                            #print("Largou")
                             self.board[row][col] = ant.payload
                             ant.payload = "_"
                             body_positions[row][col] = True
