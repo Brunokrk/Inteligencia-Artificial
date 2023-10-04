@@ -19,6 +19,7 @@ class ScrappyBoard():
         self.k1 = self.setk1()
         self.k2 = self.setk2()
         self.alpha = self.setAlpha()
+        self.print_ants = True
 
     def setk1(self):
         if self.corpses == 400:
@@ -26,7 +27,7 @@ class ScrappyBoard():
             return 0.3
         else:
             #15 Grupos
-            return 0.4
+            return 0.15
 
     def setk2(self):
         if self.corpses == 400:
@@ -34,13 +35,13 @@ class ScrappyBoard():
             return 0.6
         else:
             #15 Grupos
-            return 0.3
+            return 0.35
     
     def setAlpha(self):
         if self.corpses == 400:
             return 25
         else:
-            return 1.15
+            return 2
 
     def lerDataset(self):
         linhas = []
@@ -98,7 +99,7 @@ class ScrappyBoard():
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_p]:  # Verifique se a tecla "P" está pressionada
-                ants_done = not ants_done
+                self.print_ants = not self.print_ants
 
             if not ants_done:
                 # superfície temporária
@@ -112,42 +113,42 @@ class ScrappyBoard():
                             body_positions[row][col] = True
                             pygame.draw.rect(temp_surface, self.board[row][col].color, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
                 
-                
-                for ant in self.ants:
-                    ant.move(self.dimension)
-                    row = ant.row
-                    col = ant.column
-                    if body_positions[row][col] == True and ant.payload == None:
-                        #pegar
-                        randPegar = np.random.rand()#num aleatorio
-                        density = self.calculatingDensity(ant, "p") #retorna densidade
-                        #print(density)
-                        coeff = (self.k1 / (self.k1 + density))**3
-                        if(randPegar < coeff ):
-                            print("P"+str(randPegar) +":"+str(coeff))
-                            ant.setPayload(self.board[row][col])
-                            self.board[row][col] = noneDataType
-                            body_positions[row][col] = False
-                    elif body_positions[row][col] == False and ant.payload != None:
-                        #largar
-                        randLargar = np.random.rand()
-                        density = self.calculatingDensity(ant, "l")
-                        coeff = (density / (self.k2 + density))**3
-                        if(randLargar < coeff):
-                            print("L"+str(randLargar) +":"+str(coeff))
-                            self.board[row][col] = ant.payload
-                            ant.payload = None
-                            body_positions[row][col] = True
-                    # formigas
-                    pygame.draw.rect(temp_surface, RED, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
-                
-                print("Iteração: "+str(iter))
-                iter+=1
-                #atualizaçaõ
-                self.screen.fill(GRASS) 
-                self.screen.blit(temp_surface, (0, 0))
-                pygame.time.delay(30)
-                pygame.display.flip()
+                if self.print_ants:
+                    for ant in self.ants:
+                        ant.move(self.dimension)
+                        row = ant.row
+                        col = ant.column
+                        if body_positions[row][col] == True and ant.payload == None:
+                            #pegar
+                            randPegar = np.random.rand()#num aleatorio
+                            density = self.calculatingDensity(ant, "p") #retorna densidade
+                            #print(density)
+                            coeff = (self.k1 / (self.k1 + density))**3
+                            if(randPegar < coeff ):
+                                print("P"+str(randPegar) +":"+str(coeff))
+                                ant.setPayload(self.board[row][col])
+                                self.board[row][col] = noneDataType
+                                body_positions[row][col] = False
+                        elif body_positions[row][col] == False and ant.payload != None:
+                            #largar
+                            randLargar = np.random.rand()
+                            density = self.calculatingDensity(ant, "l")
+                            coeff = (density / (self.k2 + density))**3
+                            if(randLargar < coeff):
+                                print("L"+str(randLargar) +":"+str(coeff))
+                                self.board[row][col] = ant.payload
+                                ant.payload = None
+                                body_positions[row][col] = True
+                        # formigas
+                        pygame.draw.rect(temp_surface, RED, (col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize))
+                   
+                    print("Iteração: "+str(iter))
+                    iter+=1
+                    #atualizaçaõ
+                    self.screen.fill(GRASS) 
+                    self.screen.blit(temp_surface, (0, 0))
+                    #pygame.time.delay(30)
+                    pygame.display.flip()
           
      
         pygame.quit()
@@ -180,7 +181,7 @@ class ScrappyBoard():
         if density <=0:
             return 0.0
         else:
-            final_density = density / 9
+            final_density = density / 8
             return final_density
 
     def euclideanDistance(self, ant, item, action):
