@@ -122,9 +122,9 @@ class ScrappyBoard():
                         randPegar = np.random.rand()#num aleatorio
                         density = self.calculatingDensity(ant, "p") #retorna densidade
                         #print(density)
-                        coeff = (self.k1 / (self.k1 + density))**2
+                        coeff = (self.k1 / (self.k1 + density))**3
                         if(randPegar < coeff ):
-                            #print("P"+str(randPegar) +":"+str(coeff))
+                            print("P"+str(randPegar) +":"+str(coeff))
                             ant.setPayload(self.board[row][col])
                             self.board[row][col] = noneDataType
                             body_positions[row][col] = False
@@ -132,8 +132,9 @@ class ScrappyBoard():
                         #largar
                         randLargar = np.random.rand()
                         density = self.calculatingDensity(ant, "l")
-                        coeff = (density / (self.k2 + density))**2
+                        coeff = (density / (self.k2 + density))**3
                         if(randLargar < coeff):
+                            print("L"+str(randLargar) +":"+str(coeff))
                             self.board[row][col] = ant.payload
                             ant.payload = None
                             body_positions[row][col] = True

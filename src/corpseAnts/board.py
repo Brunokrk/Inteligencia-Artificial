@@ -73,7 +73,7 @@ class Board():
                         # chance de pegar
                         randPegar = np.random.rand()
                         chancePegar = self.calculaChancePegar(ant, "p")
-                        if(0.555 < chancePegar ):
+                        if(randPegar < chancePegar ):
                             #print("Pegou")
                             ant.payload = self.board[row][col]
                             self.board[row][col] = "_"
@@ -83,7 +83,7 @@ class Board():
                         txLargar = np.random.rand()
                         chanceLargar = self.calculaChancePegar(ant, "l")
                         print(str(chanceLargar) +":"+str(txLargar))
-                        if(0.333 < chanceLargar):
+                        if(txLargar < chanceLargar):
                             #print("Largou")
                             self.board[row][col] = ant.payload
                             ant.payload = "_"
@@ -94,7 +94,7 @@ class Board():
                 #atualizaçaõ
                 self.screen.fill(GRASS) 
                 self.screen.blit(temp_surface, (0, 0))
-                pygame.time.delay(30)
+                #pygame.time.delay(30)
                 pygame.display.flip()
                 #movement_count += 1  
                 #if movement_count >= totalMovements:
@@ -124,10 +124,10 @@ class Board():
         spaces = (2 * ant.vision + 1) ** 2 - 1
         if paramRet == "p":
             
-            return (1 - (qtdItens/ spaces))
+            return (1 - (qtdItens/ spaces))**2
             #return self.sigmoid(1 - (qtdItens / ((2 * ant.vision + 1) ** 2 - 1)))
         else:
-            return (qtdItens / spaces)
+            return (qtdItens / spaces)**2
             #return self.sigmoid(((qtdItens / ((2 * ant.vision + 1) ** 2 - 1))))
 
 
