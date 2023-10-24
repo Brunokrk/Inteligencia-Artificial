@@ -90,13 +90,13 @@ def simulatedAnnealing(conjuntiveNormalFormula, solution, var, clau, it, num):
     arqNome = 'simAne{}.txt'.format(num)
     f = open(arqNome, 'w')
 
-    ti = 0.010
+    ti = 0.020
     t = ti
     resultado = funcAvaliacao(conjuntiveNormalFormula, solution)/clau
- 
+    temperature = []
     s = '0 {}\n'.format(resultado)
     f.write(s)
-    lista = [resultado]
+    lista = [(resultado)]
 
     melhorSol = deepcopy(solution)
     melhorResult = resultado
@@ -107,6 +107,7 @@ def simulatedAnnealing(conjuntiveNormalFormula, solution, var, clau, it, num):
         s = '{} {}\n'.format(i, resultado)
         f.write(s)
         lista.append(resultado)
+        temperature.append(t)
         deltaE = rTemp - resultado
 
         if deltaE <= 0:
@@ -120,13 +121,14 @@ def simulatedAnnealing(conjuntiveNormalFormula, solution, var, clau, it, num):
             resultado = rTemp
 
         t = tempExp(ti, i, 0.9999)
+        #t = tempLinear (t, ti, it)
 
     f.close()
-    return melhorSol, melhorResult, lista
+    return melhorSol, melhorResult, lista, temperature
 
 def init_execution(conjuntiveNormalFormula, var, clausule, it, executions):
-    melhorRand = []
-    melhorSimAne = []
+    melhorRand = [] #Valores de cada melhor solução encontrada por execução
+    melhorSimAne = [] #Valores de cada melhor solução encontrada por execução
     
     listaRand = []
     listaSimAne = []
@@ -141,13 +143,13 @@ def init_execution(conjuntiveNormalFormula, var, clausule, it, executions):
         listaRand.append(totalRand)
         #print(listaRand)
 
-        solFinal, rFinal, totalSimAne = simulatedAnnealing(conjuntiveNormalFormula, solInicial, var, clausule, it, i)
+        solFinal, rFinal, totalSimAne, temperature = simulatedAnnealing(conjuntiveNormalFormula, solInicial, var, clausule, it, i)
         melhorSimAne.append(rFinal)
         listaSimAne.append(totalSimAne)
-        #print(listaSimAne)
+        #print(totalSimAne)
     
-    print(melhorRand)
+    #print(melhorRand)
     print(melhorSimAne)
 
     
-    return listaRand, listaSimAne, melhorRand, melhorSimAne
+    return listaRand, listaSimAne, melhorRand, [clausule * fo for fo in melhorSimAne], temperature
